@@ -1,0 +1,33 @@
+<header>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4 col-xs-6">
+				<a class="header-logo" href="/">PebbleS</a>
+			</div>
+			<div class="col-sm-2 col-sm-offset-2 hidden-xs header-btn">
+				<a class="header-rss" href="/feed.xml"><i class="fa fa-rss"></i>Subscribe</a>
+			</div>
+			<div class="col-sm-2 col-xs-3 header-btn">
+				{% if page.id == 'blog' %}
+					<a class="active" href="/">Blog</a>
+				{% else %}
+					<a href="/">Blog</a>
+				{% endif %}
+			</div>
+			<div class="col-sm-2 hidden-xs header-btn">
+				{% if page.id == 'about' %}
+					<a class="active" href="/about/">About Us</a>
+				{% else %}
+					<a href="/about/">About Us</a>
+				{% endif %}
+			</div>
+			<div class="col-xs-3 hidden-sm visible-xs header-btn">
+				{% if page.id == 'about' %}
+					<a class="active" href="/about/">About</a>
+				{% else %}
+					<a href="/about/">About</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</header>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html ;charset=UTF-8">
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Designing a simple but modular engine - Pebbles Games</title>
+    <meta name="description" content="Pebbles Games is a new indie game studio based out of Toronto, ON. We are currently in the midst of creating our first unnamed creation, but you can follow our progress (and rants) by checking out our blog.">
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="canonical" href="http://pebblesgames.com/game/2014/11/13/designing-a-modular-engine.html">
+
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+</head>
+
+  <body>
+    <div id="wrap">
+      <header>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4 col-xs-6">
+				<a class="header-logo" href="/">PebbleS</a>
+			</div>
+			<div class="col-sm-2 col-sm-offset-2 hidden-xs header-btn">
+				<a class="header-rss" href="/feed.xml"><i class="fa fa-rss"></i>Subscribe</a>
+			</div>
+			<div class="col-sm-2 col-xs-3 header-btn">
+				
+					<a href="/">Blog</a>
+				
+			</div>
+			<div class="col-sm-2 hidden-xs header-btn">
+				
+					<a href="/about/">About Us</a>
+				
+			</div>
+			<div class="col-xs-3 hidden-sm visible-xs header-btn">
+				
+					<a href="/about/">About</a>
+				
+			</div>
+		</div>
+	</div>
+</header>
+
+      <div id="content" class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="fluid-container post">
+              <div class="row">
+                <div class="col-xs-12">
+                  <a class="post-title" href="/game/2014/11/13/designing-a-modular-engine.html">Designing a simple but modular engine</a>
+                  <p class="post-author">Posted by Alex on November 13, 2014</p>
+                  <p class="p-end">
+	So I had the unfortunate opportunity to learn about <a target="_blank" href="http://en.wikipedia.org/wiki/Entity_component_system">component-driven development</a> during a job interview for a potential internship at a mobile games studio. Despite the fact that I was geniunely interested in learning more about it and that I hoped to teach myself prior to starting the job, I don't think they were too interested in a student who knew nothing about the topic. Let's just say I didn't get that internship.
+	<br><br>
+	It's been a couple years since that interview and I like to think I'm at least slightly more knowledgeable about certain design patterns. So when it came time to finally design the engine which I was going to use for my first marketable game, I immediately decided that I should focus on designing it as an entity-component system. The decision was pretty easy considering how well Unity pushes the design pattern via the <a target="_blank" href="http://docs.unity3d.com/Manual/Inspector.html">Inspector</a>. My main goal though, even more so then using components, was to design an engine which I could add and edit with little development overhead. I wanted to simplify the process of creating new objects to the point where it would take me virtually no time to create something like a new enemy.
+	<br><br>
+	For this post, I'll give a high level overview of how I designed the engine to be easily modifiable and expandable. In a later post (don't know how long from now) I'll go more in depth with certain aspects of the code and how it all works together. If you have any specific questions, feel free to ask in the comments. If the question is simple I may just answer it there, but if it is more long-winded I'll probably include it in the sequel to this blog post.
+</p>
+
+<hr class="grey">
+
+<p>
+  Since this wasn't my first attempt at designing a component based engine, I already knew one issue that I wanted to avoid, the overuse of components. Components are super helpful and great for abstracting out a specific mechanic or piece of code; but, they are only as useful as you make them. Just like anything else in development, they are a tool which can help or hinder you depending on how you use them. There's no point creating a design where each object is required to have 10 components, and while that is a gross oversimplification, overengineering can lead to some serious headaches down the road. Considering I'm only creating a 2D engine, I don't need an excessive amount of components per object.
+  <br><br>
+  So let's break down a basic enemy object into potential components, I'll use the example of a Goomba since it's easy to understand and most 2D platformers have their own example of an enemy with a similar movement pattern. The most basic requirements for a Goomba object can be broken down into a few components:
+</p>
+
+<div class="row p-end">
+  <div class="col-md-3 col-xs-6 p-end">
+    <div class="post-image" style="width: 100%;">
+      <img src="http://pebblesgames.com/img/goomba-base.png" alt="Goomba (x, y) coordinates" />
+      <p>(X, Y) position in a 2D space</p>
+    </div>
+  </div>
+  <div class="col-md-3 col-xs-6 p-end">
+    <div class="post-image" style="width: 100%;">
+      <img src="http://pebblesgames.com/img/goomba-physics.png" alt="Goomba physics" />
+      <p>Horizontal/Vertical speed and gravity</p>
+    </div>
+  </div>
+  <div class="col-md-3 col-xs-6 p-end">
+    <div class="post-image" style="width: 100%;">
+      <img src="http://pebblesgames.com/img/goomba-collision.png" alt="Goomba collision with mario" />
+      <p>Collision event handling</p>
+    </div>
+  </div>
+  <div class="col-md-3 col-xs-6 p-end">
+    <div class="post-image" style="width: 100%;">
+      <img src="http://pebblesgames.com/img/goomba-sprite.png" alt="Goomba walk animation" />
+      <p>Sprite updates and animation</p>
+    </div>
+  </div>
+</div>
+  
+<p class="p-end">
+  While some might argue that you could break it down into even more components, I like to believe in the KISS principle (aka, Keep It Simple Stupid). It's better to nail the fundamentals first before adding all the fancy trim so let's do just that. Out of the possible components I outlined above, we can start to predict what will be the basic structure of an object in our engine. Obviously the most important part of all the components is the position of the object, as speed/collisions/rendering are all dependant on the coordinates in a 2D space.
+  <br><br>
+  I decided to call the component which handles this most basic functionality the BaseObject, as all the other components are supplementary to it. I would normally call this the GameObject, but Unity already <a target="_blank" href="http://docs.unity3d.com/ScriptReference/GameObject.html">uses that name heavily</a> and I don't want to fight against Unity THAT much. Let's give names to the remaining components as well to make this a bit easier to follow. The component which handles the horizontal/vertical speed and gravity will be called the PhysicsObject, the component which handles the collision event handling will be called the CollisionObject and the component which handles the changes in animation and/or sprite will be called the SpriteObject.
+  <br><br>
+  Now looking at these other non-BaseObject components, none of them are really required for a typical object. Not every object will need a PhysicsObject (stationary objects), not every object will need a CollisionObject (non-interactive objects) and not every object will need a SpriteObject (static sprites with no animations). BaseObject on the other hand is required, so let's build these three components to be optional extensions to the BaseObject component.
+</p>
+
+<div class="post-image p-end medium">
+	<img src="http://pebblesgames.com/img/base-object-diagram.png" alt="Collision object example" />
+</div>
+
+<p class="p-end">
+  By structuring our model like this, we use BaseObject as a single point of reference for all of the additional components on the object. While the Update function is called for each component by Unity, we can instead have the BaseObject handle the updating of the other components instead, forcing Update to be called only once for the whole GameObject. Necessary? No. Clean? Yes.
+</p>
+
+<hr class="grey">
+
+<p class="p-end">
+  So since I'm just giving a quick overview in this post, I'm going to avoid posting code or going too in depth with the functionality of each component. Instead I'm going to focus on the design decisions made to allow quick changes to these components to streamline the development time.
+  <br><br>
+  Let's start with the simplest case, the SpriteObject. This component doesn't need much more then basic functions to change the current sprite or animation time. In all honesty, I haven't gone into too much depth with this component myself yet as I've had no need to. We're only using development art at this time, so I would be wasting valuable dev time by trying to expand it at this point. Once I figure out the type of assets that we'll be using, I'll start thinking on how to extend the design of this component.
+  <br><br>
+  The PhysicsObject isn't exactly complex either, but it is important to have it easily modifiable. While each object tends to have it's own unique SpriteObject, the PhysicsObject doesn't require many variations. By using public fields for the force of gravity, acceleration, friction, horizontal speed, vertical speed and maximum velocity, it's easy to adjust the physics of the object directly in the <a target="_blank" href="http://docs.unity3d.com/Manual/Inspector.html">Inspector</a>. All the component is required to do is move the BaseObject via those values.
+  <br><br>
+  The CollisionObject component on the other hand is an important one to design to be modular. Each object will likely have it's own variation of the component, so we want to minimalize the overhead of setting it up. The best way to do this is to design the class to use mock handler functions. If we design the base CollisionObject class to detect collisions and call a function stub based on the type of object collided with, classes that inherit from the class can simply override the stub to handle the collision. This logic is illustrated in the diagram below:
+</p>
+
+<div class="post-image p-end medium">
+	<img src="http://pebblesgames.com/img/collision-object-diagram.png" alt="Collision object example" />
+</div>
+
+<p>
+  This creates a desirable interface for handling collisions. Each object contains a script which inherits from the base CollisionObject class and defines the behaviour during different kinds of collisions. It doesn't get much more clean and simple then this, and it can take literally seconds to define the behaviour of a collision between two objects. Unlike the PhysicsObject the behaviour cannot be set in the Inspector, but handling collisions is fairly more complex than setting the speed of an object so this is to be expected.
+  <br><br>
+  While unique functionality of each object must still be defined by the BaseObject, we were successfully able to abstract out the optional logic for physics, collisions and sprites into their own components. Also by having these optional components accessible via the BaseObject, it is easy to cross-reference them in scripts. While some people may have their own opinions on how they like to structure their engines, I tend to like to take the most simple approach as long as it is still efficient. By creating my own engine it becomes a lot easier to streamline my development to my own personal preferences, which to me is extremely important. I like development but I like design better, so the more time I can spend on designing my game instead of dabbling in code, the better.
+</p>
+                </div>
+              </div>
+              
+                <hr>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'pebblesgames'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+                  </div>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="push"></div>
+    </div>
+    <footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4 col-xs-6">
+			  <p>
+			    <a class="footer-btn" href="/">Blog</a>|<a class="footer-btn" href="/about/">About</a>
+			    <br>
+			    &copy; 2014 Pebbles Games
+			  </p>
+			</div>
+			<div class="col-sm-4 hidden-xs">
+				<a class="footer-logo" href="/">PebbleS</a>
+			</div>
+			<div class="col-sm-4 col-xs-6 footer-cred">
+				<p>
+					<a target="_blank" href="https://twitter.com/AlexPennells"><i class="fa fa-twitter"></i></a>
+					<!--<a target="_blank" href="https://www.facebook.com/pages/Pebbles-Games/739720026106837?ref=hl"><i class="fa fa-facebook-square"></i></a>-->
+					<a target="_blank" href="/feed.xml"><i class="fa fa-rss"></i></a>
+					<br>
+				 	Background by <a target="_blank" href="http://opengameart.org/content/seamless-rock-texture-2">Etory</a>.
+				</p>
+			</div>
+		</div>
+	</div>
+</footer>
+
+    
+    <!-- Script for Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-56161400-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

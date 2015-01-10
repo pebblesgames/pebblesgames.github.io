@@ -1,0 +1,440 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+@charset "utf-8";
+
+// Fonts
+$font: Arial, Helvetica, sans-serif;
+$font-logo: PebblesLogo;
+$font-title: TitleFont;
+
+// Colors
+$black: rgb(0, 0, 0);
+$white: rgb(255, 255, 255);
+$dark-grey: rgb(40, 40, 40);
+$dark-grey-hover: rgb(50, 50, 50);
+$medium-grey: rgb(66, 66, 66);
+$medium-grey-hover: rgb(80, 80, 80);
+$light-grey: rgb(188, 188, 188);
+
+$light-orange: rgb(255, 153, 0);
+$medium-orange: rgb(240, 138, 0);
+$light-blue: rgb(50, 153, 187);
+$medium-blue: rgb(30, 143, 177);
+
+// Our variables
+$base-font-family: Helvetica, Arial, sans-serif;
+$base-font-size:   16px;
+$small-font-size:  $base-font-size * 0.875;
+$base-line-height: 1.5;
+
+$spacing-unit:     30px;
+
+$text-color:       #111;
+$background-color: #fdfdfd;
+$brand-color:      #2a7ae2;
+
+$grey-color:       #828282;
+$grey-color-light: lighten($grey-color, 40%);
+$grey-color-dark:  darken($grey-color, 25%);
+
+$on-palm:          600px;
+$on-laptop:        800px;
+
+// Using media queries with like this:
+// @include media-query($palm) {
+//     .wrapper {
+//         padding-right: $spacing-unit / 2;
+//         padding-left: $spacing-unit / 2;
+//     }
+// }
+@mixin media-query($device) {
+    @media screen and (max-width: $device) {
+        @content;
+    }
+}
+
+@font-face {
+	font-family: $font-logo;
+	src: url("/font/Graffogie.ttf");
+}
+@font-face {
+	font-family: $font-title;
+	src: url("/font/BubbleBaz.ttf");
+}
+
+html, body {
+	height: 100%;
+}
+
+body {
+	background-image: url(/img/background.jpg);
+        background-attachment: fixed;
+}
+
+p {
+	font-family: $font;
+}
+
+a {
+	color: $medium-orange;
+}
+a:hover {
+	color: $light-orange;
+}
+
+hr {
+	border-color: $medium-blue;
+}
+hr.grey {
+	border-color: $dark-grey;
+}
+
+// Wraps the the whole page (header and footer included)
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	margin: 0 auto -60px;
+}
+// Pushes down the footer, creating a margin.
+#push {
+	height: 40px;
+}
+
+/*===================================================*/
+/* Header styles */
+/*===================================================*/
+header {
+	background-color: $dark-grey;
+	min-height: 20px;
+	box-shadow: 0 2px 8px 4px $black;
+	-webkit-box-shadow: 0 2px 8px 4px $black;
+	margin-bottom: 40px;
+}
+
+.header-logo {
+	font-family: $font-logo;
+	color: $medium-orange;
+	font-size: 60px;
+	text-shadow: 4px 4px 6px $black;
+}
+.header-logo:hover {
+	color: $light-orange;
+	cursor: pointer;
+	text-shadow: 4px 4px 12px $black;
+	text-decoration: none;
+}
+
+header .row {
+	position: relative;
+}
+
+.header-btn {
+	height: 100%;
+	font-family: $font;
+	text-transform: uppercase;
+	margin-top: 50px;
+	font-weight: bold;
+	text-shadow: 2px 2px 8px $black;
+	text-align: right;
+
+	.header-rss {
+		display: block;
+		margin-top: 6px;
+		font-size: 12px;
+		color: $medium-orange;
+
+		i {
+			margin-right: 4px;
+		}
+	}
+	.header-rss:hover {
+		color: $light-orange;
+		text-decoration: none;
+	}
+	
+	a:not(.header-rss) {
+		display: block;
+		color: $white;
+		border-bottom: 1px solid $medium-grey;
+	}
+
+	a:not(.header-rss).active {
+		border-bottom: 2px solid $medium-orange;
+		box-shadow: 0 8px 6px -6px $black;
+	}
+
+	a:not(.header-rss):hover {
+		text-decoration: none;
+		border-bottom: 1px solid $light-orange;
+		box-shadow: 0 8px 6px -6px $black;
+	}
+}
+
+/*===================================================*/
+/* Footer styles */
+/*===================================================*/
+footer {
+	background-color: $dark-grey;
+	min-height: 20px;
+	box-shadow: 0 -2px 8px 4px $black;
+	-webkit-box-shadow: 0 -2px 8px 4px $black;
+	margin-top: 40px;
+}
+
+.footer-logo {
+  display: block;
+	font-family: $font-logo;
+	color: $medium-blue;
+	font-size: 40px;
+	text-shadow: 4px 4px 6px $black;
+	text-align: center;
+}
+
+.footer-logo:hover {
+	color: $light-blue;
+	cursor: pointer;
+	text-shadow: 4px 4px 12px $black;
+	text-decoration: none;
+}
+
+footer p {
+  color: $light-grey;
+  margin-top: 10px;
+}
+
+.footer-btn {
+  color: $medium-blue;
+  padding: 0 10px;
+}
+.footer-btn:hover {
+  color: $light-blue;
+}
+.footer-btn:first-of-type {
+  padding-left: 0;
+}
+
+.footer-cred {
+  text-align: right;
+  color: $light-grey;
+  font-size: 12px;
+  
+  a {
+    color: $medium-blue;
+  }
+  a:hover {
+    color: $light-blue;
+  }
+
+  i {
+  	font-size: 20px;
+  	padding-left: 2px;
+  	text-shadow: 2px 2px 6px $black;
+  }
+}
+
+/*===================================================*/
+/*  content styles */
+/*===================================================*/
+.post {
+	background-color: $medium-grey;
+	color: $white;
+	height: auto;
+	margin: auto;
+	padding: 25px;
+	box-shadow: 0 0 4px 3px $black;
+	-webkit-box-shadow: 0 0 8px 2px $black;
+	border-bottom: 3px solid $medium-orange;
+    border-top: 4px solid $medium-blue;
+    margin-bottom: 10px;
+    text-align: center;
+
+    p {
+        text-align: left;
+    }
+}
+
+.post:not(:last-of-type) {
+	margin-bottom: 20px;
+}
+
+// Left pane when viewing the blog list.
+.post-info {
+	padding: 30px 0 30px 0;
+	border-right: 2px solid $white;
+}
+
+// The date styling for posts on the blog list.
+.post-month, .post-day, .post-year {
+	text-transform: uppercase;
+	font-family: $font;
+	font-weight: bold;
+	text-align: center !important;
+	margin-bottom: 0;
+}
+.post-month, .post-year {
+	font-size: 16px;
+	line-height: 8px;
+}
+.post-day {
+	font-size: 36px;
+}
+
+.post-comment-count {
+	text-align: center;
+	font-size: 12px;
+	display: block;
+	color: $medium-orange;
+}
+.post-comment-count:hover {
+	color: $light-orange;
+	text-decoration: none;
+}
+
+.post-title {
+	font-family: $font-title;
+	font-size: 40px;
+	color: $medium-blue;
+	text-shadow: 2px 2px 8px $black;
+	line-height: 1;
+	display: block;
+	text-align: left;
+}
+.post-title:hover:not(p) {
+	color: $light-blue;
+	text-decoration: none;
+}
+
+.post-author {
+	font-family: $font;
+	font-size: 12px;
+	color: $light-grey;
+}
+
+.post-image {
+    display: inline-block;
+	width: auto;
+	height: auto;
+	padding: 10px;
+	border: 1px solid rgb(200, 200, 200);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	background-color: $dark-grey;
+
+	img {
+		display: block;
+		margin: 0 auto;
+
+		/* Keep aspect ratio without overlapping parent */
+		max-width: 95%;
+		width: auto\9;
+		height: auto;
+		vertical-align: middle;
+		border: 0;
+		-ms-interpolation-mode: bicubic;
+
+		box-shadow: 0 0 4px 3px $black;
+		-webkit-box-shadow: 0 0 8px 2px $black;
+	}
+
+	.video {
+		position: relative;
+		padding-bottom: 56.25%;
+		padding-top: 30px;
+		height: 0;
+		overflow: hidden;
+		box-shadow: 0 0 4px 3px $black;
+		-webkit-box-shadow: 0 0 8px 2px $black;
+
+		iframe, object, embed {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	p {
+		text-align: center;
+		margin: 0;
+		margin-top: 10px;
+		text-shadow: 1px 1px 4px $black;
+		font-family: $font;
+		font-size: 12px;
+		color: $light-grey;
+	}
+}
+.post-image.medium {
+	max-width: 730px;
+}
+.post-image.small {
+	max-width: 480px;
+}
+
+.p-end {
+	margin-bottom: 15px;
+}
+
+.post-note {
+  font-size: 11px;
+}
+
+/*===================================================*/
+/* About page styles */
+/*===================================================*/
+.about-logo {
+	font-family: $font-logo;
+	color: $medium-orange;
+	font-size: 80px;
+	text-shadow: 4px 4px 6px $black;
+	text-align: center !important;
+}
+
+.profile-title {
+	font-family: $font-title;
+	font-size: 30px;
+	color: $medium-orange;
+	text-shadow: 1px 1px 2px $black;
+}
+
+/*===================================================*/
+/* Pagination control styles */
+/*===================================================*/
+
+.pagination {
+    text-align: center;
+    height: auto;
+    margin: auto;
+    margin-bottom: 10px;   
+}
+
+.page-btn {
+    background-color: $dark-grey;
+    color: $light-grey;
+    height: auto;
+    margin: auto;
+    margin-right: 4px;
+    font-weight: bold;
+    padding: 5px 8px;
+    box-shadow: 0 1px 4px 2px $black;
+    -webkit-box-shadow: 0 1px 4px 2px $black;
+    text-shadow: 1px 1px 2px $black;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.page-btn:not(.disabled):hover {
+    box-shadow: 0 1px 6px 2px $black;
+    -webkit-box-shadow: 0 1px 6px 2px $black;
+    text-decoration: none;
+}
+.page-btn.active {
+    color: $medium-orange;
+}
+.page-btn.disabled {
+    color: $medium-grey;
+}
